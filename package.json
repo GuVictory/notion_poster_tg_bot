@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@notionhq/client": "^2.2.3",
-    "grammy": "^1.14.1"
+    "grammy": "^1.14.1",
+    "winston": "^3.8.2"
   }
 }
