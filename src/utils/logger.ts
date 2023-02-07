@@ -32,20 +32,6 @@ export class Logger {
                 ],
             });
 
-            if (process.env.NODE_ENV !== 'production') {
-                Logger.instance.add(
-                    new winston.transports.Console({
-                        format: winston.format.combine(
-                            winston.format.json(),
-                            winston.format.timestamp({
-                                format: 'MMM-DD-YYYY HH:mm:ss',
-                            }),
-                            winston.format.prettyPrint(),
-                        ),
-                    }),
-                );
-            }
-
             if (process.env.NODE_ENV === 'production') {
                 Logger.instance.add(
                     new winston.transports.File({ filename: 'logs/errors.log', level: 'error' }),

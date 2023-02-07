@@ -1,14 +1,15 @@
-import { Bot } from 'grammy';
-import { Client as NotionClient } from '@notionhq/client';
+// import { Client as NotionClient } from '@notionhq/client';
 import * as dotenv from 'dotenv';
+import { Bot } from './bot/bot';
+// import { Logger } from './utils/logger';
 dotenv.config();
 
 const bot = new Bot(process.env.TG_BOT_TOKEN || '');
 
-const notion = new NotionClient({ auth: process.env.NOTION_TOKEN });
+/** const notion = new NotionClient({ auth: process.env.NOTION_TOKEN });
 const databaseId = process.env.NOTION_DB_ID;
 
-async function addItem(text?: string, url?: string) {
+async function addItem(text?: string, url?: string, haveMedia = false, forward = false) {
     if (text === undefined || url === undefined) {
         return;
     }
@@ -27,8 +28,14 @@ async function addItem(text?: string, url?: string) {
                         },
                     ],
                 },
-                link: {
+                'Ссылка на пост': {
                     url,
+                },
+                Медиа: {
+                    checkbox: haveMedia,
+                },
+                Пересланное: {
+                    checkbox: forward,
                 },
             },
             children: [
@@ -55,8 +62,7 @@ async function addItem(text?: string, url?: string) {
 }
 
 bot.on('msg', (ctx) => {
-    console.log(ctx.msg);
-
+    Logger.i.info(ctx.msg);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore not correct tupings in library
     const chatId = ctx.msg.sender_chat?.username;
@@ -64,7 +70,18 @@ bot.on('msg', (ctx) => {
     const messageId = ctx.msg.message_id;
     const linkToPost = `https://t.me/${chatId}/${messageId}`;
 
-    if (ctx.msg.text || ctx.msg.caption) addItem(ctx.msg.text || ctx.msg.caption, linkToPost);
+    if (ctx.msg.text || ctx.msg.caption) {
+        addItem(
+            ctx.msg.text || ctx.msg.caption,
+            linkToPost,
+            ctx.msg.caption !== undefined,
+            ctx.msg.forward_from_chat !== undefined,
+        );
+    }
 });
 
-bot.start();
+bot.start().then(() => Logger.i.info('Bot started'));
+**/
+
+// https://grammy.dev/plugins/parse-mode.html#usage-improving-formatting-experience
+// https://developers.notion.com/reference/post-page
